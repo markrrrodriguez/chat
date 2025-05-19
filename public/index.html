@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Group Chat</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="chat-container">
+    <h2>Group Chat</h2>
+    <ul id="messages"></ul>
+    <div id="typing"></div>
+    <form id="form" autocomplete="off">
+      <input id="input" placeholder="Type a message..." autofocus />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <!-- Socket.IO -->
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- Client-side JS -->
+  <script src="client.js"></script>
+</body>
+</html>
