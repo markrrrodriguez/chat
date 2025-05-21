@@ -2,6 +2,8 @@
   "dependencies": {
     "express": "^5.1.0",
     "express.io": "^1.1.13",
-    "socket.io": "^4.8.1"
+    "nodemon": "^3.1.10",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
   }
 }
