@@ -1,13 +1,19 @@
-html, body {
+/* General resets */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  height: 100%;
-  width: 100%;
-  font-family: sans-serif;
-  background-color: #000;
-  box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+  background-color: #000;
+  color: white;
+  font-family: sans-serif;
+}
+
+/* Main app layout */
 #app {
   display: flex;
   flex-direction: row;
@@ -15,91 +21,84 @@ html, body {
   width: 100%;
 }
 
-#chat-container {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  background: black;
-  box-sizing: border-box;
-}
-
-#messages {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 10px 0;
-  flex-grow: 1;
-  overflow-y: auto;
-  color: white;
-}
-
-#messages li {
-  padding: 5px 10px;
-  border-bottom: 1px solid #444;
-}
-
-#typing {
-  font-style: italic;
-  color: white;
-  margin: 5px 0;
-  height: 20px;
-}
-
-form {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-}
-
-#input {
-  flex-grow: 1;
-  min-width: 0;
-  padding: 10px;
-  background: grey;
-  border: none;
-  font-size: 1rem;
-  color: white;
-  box-sizing: border-box;
-}
-
-button {
-  background: grey;
-  border-radius: 50px;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 1rem;
-  border: none;
-  color: white;
-}
-
+/* Sidebar with users */
 #users {
   width: 250px;
   background: #1a1a1a;
-  border-left: 1px solid #333;
+  border-right: 1px solid #333;
   padding: 1rem;
-  box-sizing: border-box;
   overflow-y: auto;
-  height: 100%;
-  color: white;
 }
 
 #users h3 {
-  margin-top: 0;
+  margin-bottom: 1rem;
   color: #ccc;
 }
 
 #users ul {
-  padding: 0;
   list-style: none;
 }
 
 #users li {
+  padding: 5px 10px;
   margin-bottom: 0.5rem;
-  padding: 5px;
+  border-bottom: 1px solid #333;
+  cursor: pointer;
+}
+
+/* Chat area */
+#chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+/* Messages */
+#messages {
+  list-style: none;
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+#messages li {
+  padding: 8px 12px;
   border-bottom: 1px solid #333;
 }
 
-/* --- MOBILE RESPONSIVE --- */
+/* Typing indicator */
+#typing {
+  height: 20px;
+  font-style: italic;
+  color: #aaa;
+  margin-bottom: 5px;
+}
+
+/* Message input */
+form {
+  display: flex;
+  gap: 10px;
+}
+
+#input {
+  flex-grow: 1;
+  padding: 10px;
+  background: #444;
+  color: white;
+  border: none;
+}
+
+button {
+  padding: 10px 20px;
+  background: #666;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Mobile layout */
 @media (max-width: 768px) {
   #app {
     flex-direction: column;
@@ -108,7 +107,7 @@ button {
   #users {
     width: 100%;
     height: 150px;
-    border-left: none;
+    border-right: none;
     border-top: 1px solid #333;
     order: 2;
   }

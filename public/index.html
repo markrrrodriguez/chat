@@ -1,24 +1,137 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Group Chat</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div id="chat-container">
-    <h2>Group Chat</h2>
-    <ul id="messages"></ul>
-    <div id="typing"></div>
-    <form id="form" autocomplete="off">
-      <input id="input" placeholder="Type a message..." autofocus />
-      <button type="submit">Send</button>
-    </form>
-  </div>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+    </style>
+    <link rel="stylesheet" href="style.css" />
+    <!-- assuming you move CSS to a file -->
+  </head>
+  <body>
+    <div id="app">
+      <div id="users">
+        <h3>Users</h3>
+        <ul id="user-list"></ul>
+      </div>
 
-  <!-- Socket.IO -->
-  <script src="/socket.io/socket.io.js"></script>
-  <!-- Client-side JS -->
-  <script src="client.js"></script>
-</body>
+      <div id="chat-container">
+        <ul id="messages"></ul>
+        <div id="typing"></div>
+        <form id="form">
+          <input id="input" autocomplete="off" placeholder="Type message..." />
+          <button>Send</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const form = document.getElementById("form");
+      const input = document.getElementById("input");
+      const messages = document.getElementById("messages");
+      const typingIndicator = document.getElementById("typing");
+      const userList = document.getElementById("user-list");
+
+      const userId = localStorage.getItem("userId") || crypto.randomUUID();
+      localStorage.setItem("userId", userId);
+      socket.emit("hello", userId); // <-- REQUIRED
+
+      function appendMessage(text, className = "") {
+        const li = document.createElement("li");
+        li.textContent = text;
+        if (className) li.classList.add(className);
+        messages.appendChild(li);
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+
+      // Submit message
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (input.value) {
+          socket.emit("chat message", input.value);
+          input.value = "";
+          socket.emit("typing", false);
+          typing = false;
+        }
+      });
+
+      // Typing logic
+      let typing = false;
+      let timeout;
+      input.addEventListener("input", () => {
+        if (!typing) {
+          typing = true;
+          socket.emit("typing", true);
+        }
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          typing = false;
+          socket.emit("typing", false);
+        }, 1000);
+      });
+
+      // Socket handlers
+      socket.on("chat message", ({ username, msg }) => {
+        appendMessage(`${username}: ${msg}`);
+      });
+
+      socket.on("chat history", (history) => {
+        history.forEach(({ username, msg }) => {
+          appendMessage(`${username}: ${msg}`);
+        });
+      });
+
+      socket.on("typing", ({ username, isTyping }) => {
+        typingIndicator.textContent = isTyping
+          ? `${username} is typing...`
+          : "";
+      });
+
+      socket.on("user list", (users) => {
+        userList.innerHTML = "";
+        users.forEach(({ userId, username }) => {
+          const li = document.createElement("li");
+          li.textContent = username;
+          li.dataset.userid = userId;
+          li.style.cursor = "pointer";
+          li.onclick = () => {
+            const pm = prompt(`Send private message to ${username}:`);
+            if (pm) {
+              socket.emit("private message", { toUserId: userId, msg: pm });
+            }
+          };
+          userList.appendChild(li);
+        });
+      });
+
+      socket.on("private message", ({ fromUsername, msg }) => {
+        appendMessage(`(PM) ${fromUsername}: ${msg}`, "private");
+      });
+
+      socket.on("user connected", (username) => {
+        appendMessage(`${username} joined`, "system");
+      });
+
+      socket.on("user disconnected", (username) => {
+        appendMessage(`${username} left`, "system");
+      });
+
+      socket.on("room message", ({ username, msg, room }) => {
+        appendMessage(`[${room}] ${username}: ${msg}`);
+      });
+
+      socket.on("user joined room", ({ username, room }) => {
+        appendMessage(`${username} joined room ${room}`, "system");
+      });
+
+      // Optional: join a room for demo
+      socket.emit("join room", "general");
+    </script>
+  </body>
 </html>

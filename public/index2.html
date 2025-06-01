@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Socket.IO Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- Chat messages -->
+    <ul id="messages"></ul>
+
+    <!-- Typing indicator gets injected by client.js -->
+
+    <!-- Message form -->
+    <form id="form" autocomplete="off">
+      <input id="input" placeholder="Type a message..." />
+      <button>Send</button>
+    </form>
+
+    <!-- User list -->
+    <h3>Users</h3>
+    <ul id="user-list"></ul>
+  </div>
+
+  <script src="client.js"></script>
+</body>
+</html>
